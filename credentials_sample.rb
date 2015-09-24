@@ -1,0 +1,3 @@
+EMAIL = 'legakh' #don't need @gmail.com
+PASSWORD = '123456'
+TELEGRAM_TOKEN = '108822068:AAFFgFGg4Uwp058Q-HANEVDOdMVzbYVUL0M'
