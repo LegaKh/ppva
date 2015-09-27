@@ -1,7 +1,5 @@
-require_relative 'mailer'
-require_relative 'webdriver'
-require_relative 'telegram_bot'
 require_relative 'credentials'
+require_relative 'webdriver'
 
 class RegistrationHelper
   attr_reader :browser
@@ -15,11 +13,10 @@ class RegistrationHelper
     success = false
     until success do
       i += 1
-      puts "perform attempt #{i*50 - 50}"
+      puts "perform attempt #{i*1000 - 1000} at #{Time.new.strftime('%H:%M:%S')}"
       success = browser.do_dirty_job
-      sleep(5)
     end
-    sleep(60)
+    sleep(300)
   end
 end
 

@@ -4,7 +4,7 @@ class NotificationMailer
   attr_reader :gmail
 
   def initialize(username, password)
-    @gmail   = Gmail.connect(username, password)
+    @gmail = Gmail.connect(username, password)
   end
 
   def notify

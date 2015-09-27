@@ -1,7 +1,7 @@
 require 'telegram/bot'
 
 class TelegramNotifier
-  attr_accessor :message
+  attr_reader :message
 
   def initialize(message = 'Hurry Up!')
     @message = message

@@ -1,23 +1,24 @@
 require 'watir-webdriver'
 
+require_relative 'notifyer'
+
 class Webdriver
-  attr_accessor :b, :success
+  attr_reader :browser
 
   def initialize(browser)
-    @b = browser
-    @success = false
+    @browser = browser
   end
 
   def do_dirty_job
     prepare rescue return false
-    50.times do
+    1000.times do
       begin
         do_proper_select
-        if success = check_sucess
+        if sucess?
           notify!
-          return success
+          return true
         else
-          sleep(4)
+          sleep(2)
         end
       rescue
         return false
@@ -34,30 +35,32 @@ class Webdriver
   end
 
   def pass_first_page
-    b.goto 'www.polandvisa-ukraine.com/scheduleappointment_2.html'
-    b.iframe.link(id: 'ctl00_plhMain_lnkSchApp').click
+    browser.goto 'www.polandvisa-ukraine.com/scheduleappointment_2.html'
+    iframe.link(id: 'ctl00_plhMain_lnkSchApp').click
   end
 
   def pass_second_page
-    b.iframe.select_list(id: 'ctl00_plhMain_cboVAC').select('Польщі Одеса') #('Польщі Одеса') for tests Харків
-    b.iframe.select_list(id: 'ctl00_plhMain_cboPurpose').select('Подача документів')
-    b.iframe.input(id: 'ctl00_plhMain_btnSubmit').click
+    iframe.select_list(id: 'ctl00_plhMain_cboVAC').select(CONSULATE)
+    iframe.select_list(id: 'ctl00_plhMain_cboPurpose').select('Подача документів')
+    iframe.input(id: 'ctl00_plhMain_btnSubmit').click
   end
 
   def do_proper_select
-    selector = b.iframe.select_list(id: 'ctl00_plhMain_cboVisaCategory')
-    selector.select(selector.selected?('-Оберіть візову категорію-') ? 'Національна Віза' : '-Оберіть візову категорію-')
+    selector = iframe.select_list(id: 'ctl00_plhMain_cboVisaCategory')
+    selector.select(selector.selected?('-Оберіть візову категорію-') ? VISA_TYPE : '-Оберіть візову категорію-')
   end
 
-  def check_sucess
-    b.iframe.span(id: 'ctl00_plhMain_lblMsg').exist? &&
-    b.iframe.span(id: 'ctl00_plhMain_lblMsg').text.include?('2015')
+  def sucess?
+    iframe.span(id: 'ctl00_plhMain_lblMsg').exist? &&
+    iframe.span(id: 'ctl00_plhMain_lblMsg').text.include?('2015')
   end
 
   def notify!
-    message = b.iframe.span(id: 'ctl00_plhMain_lblMsg').text
-    th1 = Thread.new { TelegramNotifier.new(message).notify }
-    th2 = Thread.new { NotificationMailer.new(EMAIL, PASSWORD).notify }
-    [th1, th2].each(&:join)
+    message = iframe.span(id: 'ctl00_plhMain_lblMsg').text
+    Notifyer.notify!(message)
+  end
+
+  def iframe
+    browser.iframe
   end
 end
