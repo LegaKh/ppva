@@ -10,19 +10,18 @@ class Webdriver
   end
 
   def do_dirty_job
-    prepare rescue return false
-    1000.times do
-      begin
+    begin
+      prepare
+      1000.times do
         do_proper_select
         if sucess?
           notify!
           return true
-        else
-          sleep(2)
         end
-      rescue
-        return false
+        sleep(2)
       end
+    rescue => e
+      puts "ERROR: #{e.message} at #{time}"
     end
     false
   end
