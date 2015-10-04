@@ -1,7 +1,3 @@
-require 'watir-webdriver'
-
-require_relative 'notifyer'
-
 class Webdriver
   attr_reader :browser
 
@@ -10,20 +6,12 @@ class Webdriver
   end
 
   def do_dirty_job
-    begin
-      prepare
-      1000.times do
-        do_proper_select
-        if sucess?
-          notify!
-          return true
-        end
-        sleep(2)
-      end
+    prepare
+    do_clicks
+    notify!
     rescue => e
       puts "ERROR: #{e.message} at #{time}"
-    end
-    false
+      return false
   end
 
   private
@@ -49,14 +37,21 @@ class Webdriver
     selector.select(selector.selected?('-Оберіть візову категорію-') ? VISA_TYPE : '-Оберіть візову категорію-')
   end
 
+  def do_clicks
+    loop do
+      sleep(2)
+      do_proper_select
+      break if sucess?
+    end
+  end
+
   def sucess?
     iframe.span(id: 'ctl00_plhMain_lblMsg').exist? &&
     iframe.span(id: 'ctl00_plhMain_lblMsg').text.include?('2015')
   end
 
   def notify!
-    message = iframe.span(id: 'ctl00_plhMain_lblMsg').text
-    Notifyer.notify!(message)
+    Notifyer.notify(iframe.span(id: 'ctl00_plhMain_lblMsg').text)
   end
 
   def iframe
