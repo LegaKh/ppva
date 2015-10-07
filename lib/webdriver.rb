@@ -34,7 +34,7 @@ class Webdriver
 
   def do_proper_select
     selector = iframe.select_list(id: 'ctl00_plhMain_cboVisaCategory')
-    selector.select(selector.selected?('-Оберіть візову категорію-') ? VISA_TYPE : '-Оберіть візову категорію-')
+    selector.select(selector.selected?(VISA_TYPE) ? '-Оберіть візову категорію-' : VISA_TYPE)
   end
 
   def do_clicks
@@ -46,12 +46,11 @@ class Webdriver
   end
 
   def sucess?
-    iframe.span(id: 'ctl00_plhMain_lblMsg').exist? &&
-    iframe.span(id: 'ctl00_plhMain_lblMsg').text.include?('2015')
+    iframe.span(id: 'ctl00_plhMain_lblMsg').text.include?('20')
   end
 
   def notify!
-    Notifyer.notify(iframe.span(id: 'ctl00_plhMain_lblMsg').text)
+    Notifyer.notify(iframe.span(id: 'ctl00_plhMain_lblMsg').text + ' ' + CONSULATE)
   end
 
   def iframe

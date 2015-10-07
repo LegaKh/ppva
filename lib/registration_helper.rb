@@ -10,7 +10,7 @@ class RegistrationHelper
       puts "perform new attempt at #{time}"
       free_date = @driver.do_dirty_job
     end
-    sleep(300)
+    sleep(30)
   end
 end
 
