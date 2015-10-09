@@ -1,9 +1,13 @@
 require 'watir-webdriver'
 require 'telegram/bot'
 require 'gmail'
+require 'two_captcha'
+# require 'pry'
 
+require_relative 'steps_processing_module'
 require_relative 'webdriver'
 require_relative 'notifyer'
 require_relative 'telegram_bot'
 require_relative 'mailer'
 require_relative 'registration_helper'
+require_relative 'captcha_resolver'

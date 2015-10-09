@@ -1,6 +1,6 @@
 module NotificationMailer
-  def self.notify(message)
-    Gmail.connect(G_LOGIN, G_PASSWORD) do |gmail|
+  def self.notify message
+    Gmail.connect G_LOGIN, G_PASSWORD do |gmail|
       gmail.deliver do
         to EMAIL_TO
         subject message

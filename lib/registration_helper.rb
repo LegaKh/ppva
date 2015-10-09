@@ -1,19 +1,19 @@
 class RegistrationHelper
 
   def initialize
-    @driver = Webdriver.new(Watir::Browser.new)
+    @driver = Webdriver.new Watir::Browser.new
   end
 
   def perform
-    free_date = false
-    until free_date do
+    succes = false
+    until succes do
       puts "perform new attempt at #{time}"
-      free_date = @driver.do_dirty_job
+      succes = @driver.register_me
     end
-    sleep(30)
+    sleep 60
   end
 end
 
 def time
-  Time.new.strftime('%H:%M:%S')
+  Time.new.strftime '%H:%M:%S'
 end
